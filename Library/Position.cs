@@ -55,6 +55,10 @@ namespace Library
             return (p.Height == this.Height && p.Latitude == this.Latitude && p.Longitude == this.Longitude); 
         }
 
+        public void Print()
+        {
+            Console.WriteLine("Position {0} latitude, {1} longitude, {2} height.",Latitude,Longitude,Height);
+        }
 
 }
 }

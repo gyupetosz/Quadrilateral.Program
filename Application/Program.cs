@@ -1,6 +1,7 @@
 ﻿using Library;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Application
 {
@@ -75,7 +76,9 @@ namespace Application
         static void Main(string[] args)
         {
             List<Position> positions = ReadPositions();
-            
+            positions = positions.OrderByDescending(x => x.Latitude).ToList();
+            positions = positions.OrderBy(x => x.Longitude).ToList();
+            positions.ForEach(x => x.Print());
             
         }
     }
