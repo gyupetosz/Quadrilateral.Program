@@ -5,10 +5,38 @@ using System.Linq;
 
 namespace Application
 {
-    internal class Program
+    public static class Program
     {
+        public static List<Position> DuplicateChecker(List<Position> positions, Position position)
+        {
+            foreach (Position pos in positions)
+            {
+                if (pos.Equals(position))
+                {
+                    throw new ArgumentException(String.Format("Position with latitude {0} and longitude {1} is already present", position.Latitude, position.Longitude), "num");
+                }
+            }
+            positions.Add(position);
+            return positions;
+        }
 
-        static List<Position> ReadPositions()
+        public static bool Parse(string line, out double result)
+        {
+            result = 0;
+            bool parsed = double.TryParse(line, out double value);
+
+            if (!parsed || double.IsNaN(value) || double.IsInfinity(value))
+            {
+                return false;
+            }
+            else
+            {
+                result = value;
+                return true;
+            }
+        }
+
+        public static List<Position> ReadPositions()
         {
             Console.WriteLine("Add longitude then latitude then height press enter after each line of data");
             Console.WriteLine("Type break to start over");
@@ -32,15 +60,9 @@ namespace Application
                     {
                         break;
                     }
-                    bool parsed = double.TryParse(readLine, out double value);
 
-                    if (!parsed || double.IsNaN(value) || double.IsInfinity(value))
-                    {
-                        Console.WriteLine("Give a number in the proper format!");
-                        positions.Clear();
-                        break;
-                    }
-
+                    if (!Parse(readLine, out double value)) break;
+                    
                     if (i % 3 == 0)
                     {
                         latitude = value;
@@ -53,14 +75,7 @@ namespace Application
                     {
                         height = value;
                         Position position = new Position(latitude, longitude, height);
-                        foreach (Position pos in positions)
-                        {
-                            if(pos.Equals(position))
-                            {
-                                throw new ArgumentException(String.Format("Position with latitude {0} and longitude {1} is already present", position.Latitude, position.Longitude),"num");
-                            }
-                        }
-                        positions.Add(position);
+                        positions = DuplicateChecker(positions, position);
                     }
 
                 }
@@ -73,13 +88,26 @@ namespace Application
             }
             return positions;
         }
-        static void Main(string[] args)
+
+        public static List<Position> OrderElements(List<Position> positions)
+        {
+            positions = positions.OrderBy(x => x.Longitude).ToList();
+            positions = positions.OrderByDescending(x => x.Latitude).ToList();
+            
+            return positions;
+        }
+        public static void Main(string[] args)
         {
             List<Position> positions = ReadPositions();
-            positions = positions.OrderByDescending(x => x.Latitude).ToList();
-            positions = positions.OrderBy(x => x.Longitude).ToList();
-            positions.ForEach(x => x.Print());
             
+            for(int i = 1; i < positions.Count;i++)
+            {
+                double distance = Calculations.Distance(positions[i - 1], positions[i]);
+                Console.WriteLine("The distance between the {0}. and {1}. position is {2}", i - 1, i, distance);
+            }
+
+            positions = OrderElements(positions);
+            positions.ForEach(x => x.Print());
         }
     }
 }

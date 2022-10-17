@@ -7,14 +7,14 @@ namespace Library
     {
         public Position(double latitude, double longitude, double height)
         {
-            if (latitude < -90.0 && latitude > 90.0)
+            if (latitude < -90.0 || latitude > 90.0)
             {
                 throw new ArgumentOutOfRangeException("latitude");
             }else
             {
                 Latitude = latitude;
             }
-            if(longitude < 0 && longitude > 180.0)
+            if(longitude < 0 || longitude > 180.0)
             {
                 throw new ArgumentOutOfRangeException("longitude");
             }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    internal static class Calculations
+    public static class Calculations
     {
-        private static double ToRadians(double degrees)
+        public static double ToRadians(double degrees)
         {
             return (degrees *= Math.PI / 180);
         }
